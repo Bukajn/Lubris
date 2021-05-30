@@ -1,0 +1,2 @@
+rootProject.name = "Lubris"
+include ':app'
