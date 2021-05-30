@@ -7,7 +7,7 @@ import android.os.Bundle;
 public class MainActivity extends AppCompatActivity {
 
 
-    private String kok="sdfds";
+    private String kok="djdsjdjdj";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
