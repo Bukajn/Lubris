@@ -54,7 +54,7 @@ public class MenuFragment  extends Fragment {
         if(MainActivity.cookie!=null)
         {
             czyzalogowany.setText("Zalogowany");
-        }else if(!data_nick.equals("Default") && !data_pass.equals("Default"))
+        }else if(!data_nick.equals("") && !data_nick.equals("Default") && !data_pass.equals("")&& !data_pass.equals("Default"))
         {
             //automatyczne logowanie
             zaloguj(data_nick,data_pass);
