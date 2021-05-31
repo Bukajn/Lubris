@@ -50,6 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/pass_input"
         android:textStyle="bold"
+        android:textColor="@color/white"
         android:text="zapisz" />
 
 
