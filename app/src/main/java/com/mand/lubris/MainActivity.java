@@ -14,10 +14,13 @@ import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
    private DrawerLayout drawer;
+   public static Map<String,String> cookie;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
 

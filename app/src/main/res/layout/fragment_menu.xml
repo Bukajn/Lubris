@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -52,6 +53,22 @@
         android:textStyle="bold"
         android:textColor="@color/white"
         android:text="zapisz" />
+
+    <ProgressBar
+        android:id="@+id/progresbar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/accpet_btn"
+        android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/progresbar"
+        android:id="@+id/zalogowanyText"
+        android:text="Niezalogowany"
+        android:textSize="20sp" />
 
 
 </RelativeLayout>
