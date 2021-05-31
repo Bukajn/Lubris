@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/wpiszNick_text"
         android:text="Nazwa użytkownika"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
     <EditText
         android:id="@+id/nick_input"
@@ -21,7 +21,7 @@
         android:layout_below="@+id/wpiszNick_text"
         android:hint="Enter name"
         android:inputType="text"
-        android:textColor="@color/black"
+        android:textColor="?attr/textColor"
         android:textColorHint="@color/black"
         android:textSize="18sp" />
 
@@ -31,7 +31,7 @@
         android:id="@+id/wpiszPass_text"
         android:layout_below="@id/nick_input"
         android:text="Hasło"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
     <EditText
         android:id="@+id/pass_input"
@@ -40,7 +40,7 @@
         android:layout_below="@+id/wpiszPass_text"
         android:hint="Enter password"
         android:inputType="textPassword"
-        android:textColor="@color/black"
+        android:textColor="?attr/textColor"
         android:textColorHint="@color/black"
         android:textSize="18sp" />
 
@@ -49,6 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/pass_input"
+        android:textStyle="bold"
         android:text="zapisz" />
 
 
