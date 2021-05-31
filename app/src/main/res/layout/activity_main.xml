@@ -19,6 +19,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/Red"
             android:id="@+id/toolbar"
+            app:collapseIcon="@color/white"
             android:theme="@style/Theme.AppCompat.Light"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             android:elevation="4dp">
