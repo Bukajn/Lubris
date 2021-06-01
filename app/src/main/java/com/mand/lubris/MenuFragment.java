@@ -21,7 +21,9 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 
 import java.io.IOException;
-
+import java.lang.reflect.Method;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 
 public class MenuFragment  extends Fragment {
@@ -31,15 +33,26 @@ public class MenuFragment  extends Fragment {
     private SharedPreferences myPrefs;
     private View view;
     private TextView czyzalogowany;
+    private ProgressBar bar;
+    private  MainActivity mainActivity;
+
+    private String data_nick;
+    private String data_pass;
+
+    private Map<String,String> firstCookie; //ciasteczka pobieranie od pierwszego wejscia na strone i potrzebne by się zalogować
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        mainActivity = new MainActivity();
+
         view = inflater.inflate(R.layout.fragment_menu, container, false);
 
         nick = (EditText)view.findViewById(R.id.nick_input);
         pass = (EditText)view.findViewById(R.id.pass_input);
         czyzalogowany = (TextView)view.findViewById(R.id.zalogowanyText);
-
+        bar = (ProgressBar)view.findViewById(R.id.progresbar);
         Button btn = (Button)view.findViewById(R.id.accpet_btn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,19 +61,21 @@ public class MenuFragment  extends Fragment {
             }
         });
 
+        //odczyt danych
         myPrefs= getActivity().getSharedPreferences("Data", Context.MODE_PRIVATE);
-        String data_nick = myPrefs.getString("nickname","Default");
-        String data_pass = myPrefs.getString("password","Default");
+        data_nick = myPrefs.getString("nickname","Default");
+        data_pass = myPrefs.getString("password","Default");
 
-        //jeśli już został zalogowany
+        //jeśli już został zalogowany to nic nie rób
         if(MainActivity.cookie!=null)
         {
             czyzalogowany.setText("Zalogowany");
         }else if(!data_nick.equals("") && !data_nick.equals("Default") && !data_pass.equals("")&& !data_pass.equals("Default"))
         {
             //automatyczne logowanie
-            zaloguj(data_nick,data_pass);
+            zaloguj();
         }
+        //wstaw do inputa
         if(!data_nick.equals("Default")){
             nick.setText(data_nick);
         }
@@ -72,16 +87,56 @@ public class MenuFragment  extends Fragment {
         return view;
     }
 
+
+
     public void zapisz(View v)
     {
-        MainActivity mainActivity = new MainActivity();
+
         SharedPreferences pref = getActivity().getSharedPreferences("Data", Context.MODE_PRIVATE);
         mainActivity.save("nickname", nick.getText().toString(),pref);
         mainActivity.save("password", pass.getText().toString(),pref);
-        zaloguj(nick.getText().toString(), pass.getText().toString());
+        data_nick = nick.getText().toString();
+        data_pass = pass.getText().toString();
+        zaloguj();
     }
 
-    public void zaloguj(String nick, String pass)
+    //logowanie
+    public void zaloguj()
+    {
+
+        bar.setVisibility(View.VISIBLE);
+        mainActivity.reqeust(Jsoup.connect("https://api.librus.pl/OAuth/Authorization?client_id=46&response_type=code&scope=mydata")
+                .method(Connection.Method.GET),this,"zaloguj_etap2");
+    }
+
+    public void zaloguj_etap2(Connection.Response res)
+    {
+
+        mainActivity.reqeust(Jsoup.connect("https://api.librus.pl/OAuth/Authorization?client_id=46")
+                .data("action","login")
+                .data("login",data_nick)
+                .data("pass",data_pass)
+                .cookies(res.cookies())
+                .ignoreContentType(true)
+                .method(Connection.Method.POST),this,"zaloguj_etap3");
+                firstCookie = res.cookies();
+    }
+
+    public void zaloguj_etap3(Connection.Response res)
+    {
+        mainActivity.reqeust(Jsoup.connect("https://api.librus.pl/OAuth/Authorization/Grant?client_id=46")
+                .method(Connection.Method.GET)
+                .cookies(firstCookie),this,"zaloguj_etap4");
+    }
+
+    public void zaloguj_etap4(Connection.Response res)
+    {
+        MainActivity.cookie = res.cookies();
+        bar.setVisibility(View.INVISIBLE);
+        czyzalogowany.setText("Zalogowany");
+    }
+    //logowanie
+    /*public void zaloguj()
     {
         new Thread()
         {
@@ -135,5 +190,5 @@ public class MenuFragment  extends Fragment {
             }
         }.start();
 
-    }
+    }*/
 }

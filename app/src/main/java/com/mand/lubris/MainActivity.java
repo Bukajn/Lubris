@@ -7,17 +7,29 @@ import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
 
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Evaluator;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.function.Function;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -82,15 +94,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //zapisywanie
     public void save(String key, String data,SharedPreferences myPrefs)
     {
-        System.out.println(key);
-        System.out.println(data);
-
         SharedPreferences.Editor editor = myPrefs.edit();
         editor.putString(key, data);
         editor.apply();
         editor.commit();
+
+    }
+
+    public void reqeust(Connection con, Object obj, String funkcja)  {
+        MyTask myTask = new MyTask();
+
+        try {
+            myTask.funkcja = obj.getClass().getMethod(funkcja, Connection.Response.class);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        myTask.obj =obj;
+        myTask.execute(con);
+
     }
 
 
+    private class MyTask extends AsyncTask<Connection, Void, Connection.Response> {
+
+        Method funkcja;
+        Object obj;
+        @Override
+        protected Connection.Response doInBackground(Connection... con) {
+            Connection.Response res = null;
+            try {
+
+                res = con[0].execute();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return res;
+        }
+
+        protected void onPostExecute(Connection.Response res) {
+            try {
+                funkcja.invoke(obj,res);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
 
 }
