@@ -101,47 +101,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void reqeust(Connection con, Object obj, String funkcja)  {
-        MyTask myTask = new MyTask();
-
+    public Connection.Response request(Connection con)
+    {
+        Connection.Response res=null;
         try {
-            myTask.funkcja = obj.getClass().getMethod(funkcja, Connection.Response.class);
-        } catch (NoSuchMethodException e) {
+           res = con.execute();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        myTask.obj =obj;
-        myTask.execute(con);
 
+        return res;
     }
 
 
-    private class MyTask extends AsyncTask<Connection, Void, Connection.Response> {
-
-        Method funkcja;
-        Object obj;
-        @Override
-        protected Connection.Response doInBackground(Connection... con) {
-            Connection.Response res = null;
-            try {
-
-                res = con[0].execute();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return res;
-        }
-
-        protected void onPostExecute(Connection.Response res) {
-            try {
-                funkcja.invoke(obj,res);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
 
 }
