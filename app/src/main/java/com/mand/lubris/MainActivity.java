@@ -9,6 +9,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.Notification;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -75,4 +77,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
         }
     }
+
+
+    //zapisywanie
+    public void save(String key, String data,SharedPreferences myPrefs)
+    {
+        System.out.println(key);
+        System.out.println(data);
+
+        SharedPreferences.Editor editor = myPrefs.edit();
+        editor.putString(key, data);
+        editor.apply();
+        editor.commit();
+    }
+
+
+
 }

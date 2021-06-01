@@ -3,6 +3,7 @@ package com.mand.lubris;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +51,7 @@ public class MenuFragment  extends Fragment {
         myPrefs= getActivity().getSharedPreferences("Data", Context.MODE_PRIVATE);
         String data_nick = myPrefs.getString("nickname","Default");
         String data_pass = myPrefs.getString("password","Default");
+
         //jeśli już został zalogowany
         if(MainActivity.cookie!=null)
         {
@@ -72,11 +74,10 @@ public class MenuFragment  extends Fragment {
 
     public void zapisz(View v)
     {
-        SharedPreferences.Editor editor = myPrefs.edit();
-        editor.putString("nickname", nick.getText().toString());
-        editor.putString("password", pass.getText().toString());
-        editor.apply();
-        editor.commit();
+        MainActivity mainActivity = new MainActivity();
+        SharedPreferences pref = getActivity().getSharedPreferences("Data", Context.MODE_PRIVATE);
+        mainActivity.save("nickname", nick.getText().toString(),pref);
+        mainActivity.save("password", pass.getText().toString(),pref);
         zaloguj(nick.getText().toString(), pass.getText().toString());
     }
 
