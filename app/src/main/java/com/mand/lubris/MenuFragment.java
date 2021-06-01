@@ -62,9 +62,9 @@ public class MenuFragment  extends Fragment {
         });
 
         //odczyt danych
-        myPrefs= getActivity().getSharedPreferences("Data", Context.MODE_PRIVATE);
-        data_nick = myPrefs.getString("nickname","Default");
-        data_pass = myPrefs.getString("password","Default");
+
+        data_nick = mainActivity.read("nickname","Default");
+        data_pass =  mainActivity.read("password","Default");
 
         //jeśli już został zalogowany to nic nie rób
         if(MainActivity.cookie!=null)
@@ -93,9 +93,9 @@ public class MenuFragment  extends Fragment {
     public void zapisz(View v)
     {
 
-        SharedPreferences pref = getActivity().getSharedPreferences("Data", Context.MODE_PRIVATE);
-        mainActivity.save("nickname", nick.getText().toString(),pref);
-        mainActivity.save("password", pass.getText().toString(),pref);
+
+        mainActivity.save("nickname", nick.getText().toString());
+        mainActivity.save("password", pass.getText().toString());
         data_nick = nick.getText().toString();
         data_pass = pass.getText().toString();
         zaloguj(data_nick,data_pass);
@@ -145,6 +145,9 @@ public class MenuFragment  extends Fragment {
                             czyzalogowany.setText("Zalogowany");
                         }
                     });
+
+
+
             }
         }.start();
 

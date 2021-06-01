@@ -23,6 +23,7 @@ import com.google.android.material.navigation.NavigationView;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Evaluator;
 
 import java.io.IOException;
@@ -36,8 +37,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
    private DrawerLayout drawer;
    public static Map<String,String> cookie;
+   public static Context context;
+
+   private NavigationView navigationView;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -45,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawewr_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawer, toolbar,R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -59,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MenuFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_menu);
         }
+
+        context = this;
     }
 
     @Override
@@ -80,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+
+
     @Override
     public void onBackPressed()
     {
@@ -92,13 +101,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     //zapisywanie
-    public void save(String key, String data,SharedPreferences myPrefs)
+    public void save(String key, String data)
     {
+        SharedPreferences myPrefs = context.getSharedPreferences("Data", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = myPrefs.edit();
         editor.putString(key, data);
         editor.apply();
         editor.commit();
 
+    }
+
+    public String read(String key,String def)
+    {
+        SharedPreferences myPrefs = context.getSharedPreferences("Data", Context.MODE_PRIVATE);
+        return myPrefs.getString(key,def);
     }
 
     public Connection.Response request(Connection con)
@@ -112,7 +128,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return res;
     }
+    //todo: wybor tygodnia
+    public void pobierzPlanLekcjiNaAktualnyTydzien()
+    {
+        Connection.Response res;
+
+        res =  request(Jsoup.connect("https://synergia.librus.pl/gateway/ms/studentdatapanel/ui/plan-lekcji/2021-05-24")
+                .cookies(MainActivity.cookie)
+                .method(Connection.Method.GET));
+
+        res =  request(Jsoup.connect("https://synergia.librus.pl/gateway/api/2.0/Timetables?weekStart=2021-05-24")
+                .cookies(MainActivity.cookie)
+                .cookies(res.cookies())
+                .ignoreContentType(true)
+                .method(Connection.Method.GET));
 
 
+
+        save("timeTable",res.body());
+
+    }
 
 }
