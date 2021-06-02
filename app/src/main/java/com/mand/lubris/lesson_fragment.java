@@ -10,22 +10,45 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class lesson_fragment extends Fragment
 {
-    private String name;
-    public lesson_fragment(String name)
+    private String lekcja, nr, status, nauczyciel;
+
+    public lesson_fragment(String status, String lekcja, String nr, String nauczyciel)
     {
-        this.name = name;
+        this.status = status;
+        this.lekcja = lekcja;
+        this.nr = nr;
+        this.nauczyciel = nauczyciel;
     }
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
        View view = inflater.inflate(R.layout.fragment_lesson,container,false);
+       TextView obj_status = (TextView)view.findViewById(R.id.status);
+       TextView obj_lekcja = (TextView)view.findViewById(R.id.lekcja);
+       TextView obj_nr = (TextView)view.findViewById(R.id.nr);
+       TextView obj_nauczyciel = (TextView)view.findViewById(R.id.nauczyciel);
 
-        TextView name_text = (TextView)view.findViewById(R.id.nameLesson);
-        name_text.setText(name);
 
+       ustaw(obj_status,status);
+       ustaw(obj_lekcja,lekcja);
+       ustaw(obj_nr,nr);
+       ustaw(obj_nauczyciel,nauczyciel);
        return view;
     }
 
-
+    //ustawia normalnie,lecz gdy jest null to wtedy ustawia widoczność na gone
+    private void ustaw(TextView v, String text)
+    {
+        if (text!=null)
+        {
+            v.setText(text);
+        }else {
+            v.setVisibility(View.GONE);
+        }
+    }
 }

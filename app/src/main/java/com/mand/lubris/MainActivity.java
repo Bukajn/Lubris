@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.app.Activity;
 import android.app.Notification;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
    private DrawerLayout drawer;
    public static Map<String,String> cookie;
    public static Context context;
+   public FragmentManager fragmentManager;
 
    private NavigationView navigationView;
     @Override
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         context = this;
+        fragmentManager = getSupportFragmentManager();
     }
 
     @Override
@@ -87,7 +90,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-
+    public void zmienNaPlan()
+    {
+        fragmentManager.beginTransaction().replace(R.id.fragment_container,new PlanFragment()).commit();
+        navigationView.setCheckedItem(R.id.nav_plan);
+    }
 
     @Override
     public void onBackPressed()
@@ -128,25 +135,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return res;
     }
-    //todo: wybor tygodnia
-    public void pobierzPlanLekcjiNaAktualnyTydzien()
+
+    public void pobierzPlanLekcji(String tydzien)
     {
         Connection.Response res;
 
-        res =  request(Jsoup.connect("https://synergia.librus.pl/gateway/ms/studentdatapanel/ui/plan-lekcji/2021-05-24")
+        res =  request(Jsoup.connect("https://synergia.librus.pl/gateway/ms/studentdatapanel/ui/plan-lekcji/"+tydzien)
                 .cookies(MainActivity.cookie)
                 .method(Connection.Method.GET));
 
-        res =  request(Jsoup.connect("https://synergia.librus.pl/gateway/api/2.0/Timetables?weekStart=2021-05-24")
+        res =  request(Jsoup.connect("https://synergia.librus.pl/gateway/api/2.0/Timetables?weekStart="+tydzien)
                 .cookies(MainActivity.cookie)
                 .cookies(res.cookies())
                 .ignoreContentType(true)
                 .method(Connection.Method.GET));
 
 
+        System.out.println(cookie);
+        save("timeTable"+tydzien,res.body());
 
-        save("timeTable",res.body());
+    }
 
+    public void pobierzSale()
+    {
+        Connection.Response res;
+
+        res =  request(Jsoup.connect("https://synergia.librus.pl/przegladaj_plan_lekcji")
+                .cookies(MainActivity.cookie)
+                .method(Connection.Method.GET));
+
+        res =  request(Jsoup.connect("https://synergia.librus.pl/gateway/api/3.0/Auth/Classrooms")
+                .cookies(MainActivity.cookie)
+                .cookies(res.cookies())
+                .ignoreContentType(true)
+                .method(Connection.Method.GET));
+
+        save("classroom",res.body());
     }
 
 }

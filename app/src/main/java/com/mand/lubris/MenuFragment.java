@@ -147,7 +147,6 @@ public class MenuFragment  extends Fragment {
                     });
 
 
-
             }
         }.start();
 

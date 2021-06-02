@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Connection;
@@ -31,8 +32,8 @@ public class PlanFragment extends Fragment {
 
 
 
-        getChildFragmentManager().beginTransaction().add(R.id.plan_miejsce,new lesson_fragment("Lekcja muzyki")).commit();
-        getChildFragmentManager().beginTransaction().add(R.id.plan_miejsce,new lesson_fragment("matma")).commit();
+
+
 
 
 
@@ -42,26 +43,75 @@ public class PlanFragment extends Fragment {
             @Override
             public void run()
             {
-                mainActivity.pobierzPlanLekcjiNaAktualnyTydzien();
-
+                mainActivity.pobierzPlanLekcji("2021-05-24");
+                //mainActivity.pobierzSale();
 
                 JSONObject plan=null;
+                JSONObject sale=null;
                 try {
-                    plan= new JSONObject(mainActivity.read("timeTable","Default"));
+                    plan= new JSONObject(mainActivity.read("timeTable2021-05-24","Default"));
+                    sale = new JSONObject(mainActivity.read("classroom","Default"));
+                    System.out.println(sale);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                for (int i=0; i<=9;i++) {
+                    try {
 
-                try {
-                    System.out.println(plan.getJSONObject("Timetable").getJSONArray("2021-05-24").getJSONArray(1));
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                        JSONArray info = plan.getJSONObject("Timetable").getJSONArray("2021-05-24").getJSONArray(i);
+
+
+                            getChildFragmentManager().beginTransaction().add(R.id.plan_miejsce,przygotujLekcje(info)).commit();
+
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-
             }
         }.start();
 
 
         return view;
+    }
+
+
+    private lesson_fragment przygotujLekcje(JSONArray info) throws JSONException {
+        JSONObject inf = info.getJSONObject(0);
+
+        String status=null;
+        String lekcja=null;
+        String nr=null;
+        String nauczyciel=null;
+        //status
+        try
+        {
+            info.getJSONObject(1);
+            status = "PrzesunięcieTU";
+        }catch (JSONException e)
+        {
+            String odwolaneS = inf.get("IsCanceled").toString();
+            String zastepstwoS = inf.get("IsSubstitutionClass").toString();
+            boolean odwolane=false;
+            boolean zastepstwo=false;
+            if(odwolaneS.equals("true")){odwolane=true;}
+            if(zastepstwoS.equals("true")){zastepstwo=true;}
+
+            if(odwolane && zastepstwo){status = "PrzesunięcieZ";}
+            else if(odwolane){status="Odwołane";}
+            else if (zastepstwo){status="Zastępstwo";}
+
+        }
+
+
+        if (status==null) {
+            lekcja = inf.getJSONObject("Subject").get("Name").toString();
+            nr = inf.get("LessonNo").toString();
+            nauczyciel = inf.getJSONObject("Teacher").get("LastName").toString()+" "+inf.getJSONObject("Teacher").get("FirstName").toString();
+        }
+
+
+        return new lesson_fragment(status,lekcja,nr,nauczyciel);
     }
 }
