@@ -10,11 +10,15 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+
+import java.util.ArrayList;
 
 public class PlanFragment extends Fragment {
     private MainActivity mainActivity;
@@ -23,6 +27,15 @@ public class PlanFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mainActivity = new MainActivity();
         View view = inflater.inflate(R.layout.fragment_plan, container, false);
+
+
+
+
+        getChildFragmentManager().beginTransaction().add(R.id.plan_miejsce,new lesson_fragment("Lekcja muzyki")).commit();
+        getChildFragmentManager().beginTransaction().add(R.id.plan_miejsce,new lesson_fragment("matma")).commit();
+
+
+
 
         new Thread()
         {
@@ -40,7 +53,7 @@ public class PlanFragment extends Fragment {
                 }
 
                 try {
-                    System.out.println(plan.getJSONObject("Timetable").getJSONArray("2021-05-24"));
+                    System.out.println(plan.getJSONObject("Timetable").getJSONArray("2021-05-24").getJSONArray(1));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
