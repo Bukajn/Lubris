@@ -70,11 +70,6 @@ public class MenuFragment  extends Fragment {
         if(MainActivity.cookie!=null)
         {
             czyzalogowany.setText("Zalogowany");
-        }else if(!data_nick.equals("") && !data_nick.equals("Default") && !data_pass.equals("")&& !data_pass.equals("Default"))
-        {
-            //automatyczne logowanie
-            zaloguj(data_nick,data_pass);
-
         }
         //wstaw do inputa
         if(!data_nick.equals("Default")){
@@ -89,7 +84,7 @@ public class MenuFragment  extends Fragment {
     }
 
 
-
+    //zapisz i odśwież
     public void zapisz(View v)
     {
 
@@ -138,11 +133,25 @@ public class MenuFragment  extends Fragment {
 
 
                     MainActivity.cookie = mainCokie.cookies();
+
+                    //kod za pobrane odpowiednich stron
+                    mainActivity.pobierzPlanLekcji();
+
+
+
                     bar.post(new Runnable() {
                         @Override
                         public void run() {
                             bar.setVisibility(View.INVISIBLE);
-                            czyzalogowany.setText("Zalogowany");
+
+                            try
+                            {
+                                login.url();
+                                czyzalogowany.setText("Zalogowany");
+                            }catch (NullPointerException e){
+                                czyzalogowany.setText("Błąd logowania");
+                            }
+
                         }
                     });
 

@@ -16,14 +16,15 @@ import org.json.JSONObject;
 
 public class lesson_fragment extends Fragment
 {
-    private String lekcja, nr, status, nauczyciel;
+    private String lekcja, nr, status, nauczyciel, sala;
 
-    public lesson_fragment(String status, String lekcja, String nr, String nauczyciel)
+    public lesson_fragment(String status, String lekcja, String nr, String nauczyciel, String sala)
     {
         this.status = status;
         this.lekcja = lekcja;
         this.nr = nr;
         this.nauczyciel = nauczyciel;
+        this.sala = sala;
     }
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
@@ -32,12 +33,14 @@ public class lesson_fragment extends Fragment
        TextView obj_lekcja = (TextView)view.findViewById(R.id.lekcja);
        TextView obj_nr = (TextView)view.findViewById(R.id.nr);
        TextView obj_nauczyciel = (TextView)view.findViewById(R.id.nauczyciel);
+       TextView obj_sala = (TextView)view.findViewById(R.id.sala);
 
 
        ustaw(obj_status,status);
        ustaw(obj_lekcja,lekcja);
        ustaw(obj_nr,nr);
        ustaw(obj_nauczyciel,nauczyciel);
+       ustaw(obj_sala,sala);
        return view;
     }
 

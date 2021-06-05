@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 
@@ -63,8 +64,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         arrow.setColor(getResources().getColor(R.color.white));
 
         if(savedInstanceState==null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new MenuFragment()).commit();
-            navigationView.setCheckedItem(R.id.nav_menu);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PlanFragment()).commit();
+            navigationView.setCheckedItem(R.id.nav_plan);
         }
 
         context = this;
@@ -136,41 +137,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return res;
     }
 
-    public void pobierzPlanLekcji(String tydzien)
-    {
-        Connection.Response res;
-
-        res =  request(Jsoup.connect("https://synergia.librus.pl/gateway/ms/studentdatapanel/ui/plan-lekcji/"+tydzien)
-                .cookies(MainActivity.cookie)
-                .method(Connection.Method.GET));
-
-        res =  request(Jsoup.connect("https://synergia.librus.pl/gateway/api/2.0/Timetables?weekStart="+tydzien)
-                .cookies(MainActivity.cookie)
-                .cookies(res.cookies())
-                .ignoreContentType(true)
-                .method(Connection.Method.GET));
 
 
-        System.out.println(cookie);
-        save("timeTable"+tydzien,res.body());
 
-    }
 
-    public void pobierzSale()
-    {
+
+    public void pobierzPlanLekcji() {
         Connection.Response res;
 
         res =  request(Jsoup.connect("https://synergia.librus.pl/przegladaj_plan_lekcji")
-                .cookies(MainActivity.cookie)
+                .cookies(cookie)
                 .method(Connection.Method.GET));
 
-        res =  request(Jsoup.connect("https://synergia.librus.pl/gateway/api/3.0/Auth/Classrooms")
-                .cookies(MainActivity.cookie)
-                .cookies(res.cookies())
-                .ignoreContentType(true)
-                .method(Connection.Method.GET));
+        Document document = null;
+        try {
+            document = res.parse();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Element element = document.selectFirst("#body>div>div>form>input");
+        String value = element.attr("value");
 
-        save("classroom",res.body());
+        res = request(Jsoup.connect("https://synergia.librus.pl/przegladaj_plan_lekcji")
+                                    .data("requestkey",value)
+                                    .data("tydzien","2021-05-17_2021-05-23")
+                                    .data("pokaz_zajecia_zsk","on")
+                                    .data("pokaz_zajecia_ni","on")
+                                    .cookies(cookie)
+                                    .method(Connection.Method.POST));
+        try {
+            document = res.parse();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+       save("timetable",document.toString());
     }
+
+
 
 }

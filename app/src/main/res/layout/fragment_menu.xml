@@ -52,7 +52,7 @@
         android:layout_below="@+id/pass_input"
         android:textStyle="bold"
         android:textColor="@color/white"
-        android:text="zapisz" />
+        android:text="Odśwież" />
 
     <ProgressBar
         android:id="@+id/progresbar"
