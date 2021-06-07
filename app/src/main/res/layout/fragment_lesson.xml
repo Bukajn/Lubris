@@ -35,16 +35,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="[[lekcja]]"/>
-            <TextView
-                android:id="@+id/nowalekcja"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="[[nowalekcja]]"/>
+
             <TextView
                 android:id="@+id/nauczyciel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="[[nauczyciel]]"/>
+            <TextView
+                android:id="@+id/nowalekcja"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[[nowalekcja]]"/>
             <TextView
                 android:id="@+id/nowynauczyciel"
                 android:layout_width="wrap_content"
@@ -56,7 +57,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_marginHorizontal="4dp">
 
             <TextView
@@ -68,7 +69,8 @@
                 android:id="@+id/nowasala"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="[[nowasala]]"/>
+                android:text="[[nowasala]]"
+                android:layout_marginLeft="1dp"/>
 
 
         </LinearLayout>

@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .method(Connection.Method.GET));
 
         Document document = null;
-        try {
+        /*try {
             document = res.parse();
         } catch (IOException e) {
             e.printStackTrace();
@@ -160,11 +160,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         res = request(Jsoup.connect("https://synergia.librus.pl/przegladaj_plan_lekcji")
                                     .data("requestkey",value)
-                                    .data("tydzien","2021-05-17_2021-05-23")
+                                    .data("tydzien","2021-05-24_2021-05-30")
                                     .data("pokaz_zajecia_zsk","on")
                                     .data("pokaz_zajecia_ni","on")
                                     .cookies(cookie)
-                                    .method(Connection.Method.POST));
+                                    .method(Connection.Method.POST));*/
         try {
             document = res.parse();
         } catch (IOException e) {
